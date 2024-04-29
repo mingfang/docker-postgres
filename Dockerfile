@@ -80,15 +80,15 @@ RUN wget -O - https://github.com/pramsey/pgsql-http/archive/refs/tags/v1.6.0.tar
 
 # ParadeDB
 
-ARG PARADEDB_VERSION=v0.5.11
+ARG PARADEDB_VERSION=v0.6.1
 
 # pg_analytics
 RUN wget https://github.com/paradedb/paradedb/releases/download/${PARADEDB_VERSION}/pg_analytics-${PARADEDB_VERSION}-pg16-amd64-ubuntu2204.deb && \
     apt install ./*.deb && \
     rm *.deb
 
-# pg_bm25
-RUN wget https://github.com/paradedb/paradedb/releases/download/${PARADEDB_VERSION}/pg_bm25-${PARADEDB_VERSION}-pg16-amd64-ubuntu2204.deb && \
+# pg_search
+RUN wget https://github.com/paradedb/paradedb/releases/download/${PARADEDB_VERSION}/pg_search-${PARADEDB_VERSION}-pg16-amd64-ubuntu2204.deb && \
     wget http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu70_70.1-2ubuntu1_amd64.deb && \
     apt install ./*.deb && \
     rm *.deb
@@ -122,19 +122,30 @@ RUN wget -O - https://github.com/pgRouting/pgrouting/archive/v3.6.1.tar.gz | tar
     cd ../.. && \
     rm -rf pgrouting*
 
-# age
-RUN SHA=082aafa git clone --depth 1 --branch master https://github.com/apache/age.git && \
-    cd age* && \
-    make && \
-    make install && \
-    cd .. && rm -rf age*
-
-RUN apt-fast install -y osm2pgsql
-
 # supa_audit
-RUN git clone --branch v0.3.1 https://github.com/supabase/supa_audit.git && \
+RUN git clone --depth 1 --branch v0.3.1 https://github.com/supabase/supa_audit.git && \
     cd supa_audit && \
     make && \
     make install && \
     cd .. && rm -rf supa_audit
 
+RUN apt-fast install -y osm2pgsql
+
+# age
+RUN SHA=81d1dfa git clone --depth 1 --branch master https://github.com/apache/age.git && \
+    cd age* && \
+    make && \
+    make install && \
+    cd .. && rm -rf age*
+
+# duckdb fdw
+# https://github.com/alitrack/duckdb_fdw
+# https://github.com/duckdb/duckdb/releases/
+# RUN wget https://github.com/duckdb/duckdb/releases/download/v0.10.2/libduckdb-linux-amd64.zip && \
+#     unzip *.zip libduckdb.so -d $(pg_config --libdir)  && \
+#     rm *.zip
+
+# RUN git clone --depth 1 https://github.com/alitrack/duckdb_fdw.git && \
+#     cd duckdb_fdw && \
+#     make USE_PGXS=1 && \
+#     make install USE_PGXS=1
